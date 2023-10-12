@@ -1,0 +1,22 @@
+{
+  "name": "web-ide",
+  "version": "0.0.1",
+  "description": "运行在 Web 端的 IDE (WIP)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "--  publish  ----------------------------------------------": "",
+    "pub": "pnpm -F \"web-ide\" publish --registry https://registry.npmjs.org",
+    "pub:dry": "pnpm -F \"web-ide\" publish --dry-run --no-git-checks --registry https://registry.npmjs.org",
+    "format": "prettier --write .",
+    "commit": "cz"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "package.json"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
