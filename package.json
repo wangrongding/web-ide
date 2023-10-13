@@ -7,13 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "--  publish  ----------------------------------------------": "",
     "pub": "pnpm -F \"web-ide\" publish --registry https://registry.npmjs.org",
-    "pub:dry": "pnpm -F \"web-ide\" publish --dry-run --no-git-checks --registry https://registry.npmjs.org",
+    "pub:dry": "pnpm -F \"web-ide\" publish --dry-run --no-git-checks",
     "format": "prettier --write .",
     "commit": "cz"
   },
   "files": [
-    "dist",
     "index.js",
+    "README.md",
     "package.json"
   ],
   "keywords": [],
