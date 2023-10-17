@@ -1,7 +1,7 @@
 {
-  "name": "web-ide",
-  "version": "0.0.1",
-  "description": "运行在 Web 端的 IDE (WIP)",
+  "name": "@web-ide/web-ide",
+  "version": "0.0.2",
+  "description": "web-ide: 一个运行在 Web 端的集成开发环境。",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,7 +16,17 @@
     "README.md",
     "package.json"
   ],
-  "keywords": [],
-  "author": "",
+  "homepage": "https://github.com/wangrongding/web-ide",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangrongding/web-ide"
+  },
+  "keywords": [
+    "web-ide",
+    "web ide",
+    "webide",
+    "ide"
+  ],
+  "author": "荣顶",
   "license": "ISC"
 }
