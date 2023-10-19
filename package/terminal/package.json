@@ -1,0 +1,17 @@
+{
+  "name": "@web-ide/terminal",
+  "version": "0.0.1",
+  "description": "基于 WebContainer 实现的终端，运行在 web 中运行 NodeJs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^4.5.0"
+  }
+}
