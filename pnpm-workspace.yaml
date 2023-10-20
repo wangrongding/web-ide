@@ -1,0 +1,6 @@
+# ./pnpm-workspace.yaml
+packages:
+  # packages/目录下的所有包
+  - 'packages/*'
+  # 根目录
+  - '.'
