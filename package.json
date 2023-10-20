@@ -5,6 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "reinstall": "pnpm -r exec rm -rf node_modules && pnpm i",
+    "prepare": "husky install",
+    "preinstall": "npx only-allow pnpm",
+    "--  dev  --------------------------------------------------": "",
+    "dev": "pnpm dev:terminal",
+    "dev:terminal": "pnpm -F \"@web-ide/terminal\" dev",
+    "dev:doc": "pnpm -F doc dev",
+    "dev:parallel": "pnpm -r --no-sort dev",
+    "--  build  ------------------------------------------------": "",
+    "build": "pnpm -r --sort build",
+    "build:terminal": "pnpm -F \"@web-ide/terminal\" build",
+    "preview": "pnpm -F doc preview",
     "--  publish  ----------------------------------------------": "",
     "pub": "pnpm -F \"web-ide\" publish --registry https://registry.npmjs.org",
     "pub:dry": "pnpm -F \"web-ide\" publish --dry-run --no-git-checks",
@@ -28,5 +40,8 @@
     "ide"
   ],
   "author": "荣顶",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.3"
+  }
 }
