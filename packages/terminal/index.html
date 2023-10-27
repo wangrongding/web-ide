@@ -1,0 +1,40 @@
+<meta charset="UTF-8" />
+<style>
+  .terminal {
+    background-color: black;
+    color: limegreen;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+  }
+
+  .output {
+    .output-line {
+      margin: 0px;
+    }
+  }
+  .command {
+    color: limegreen;
+    height: 30px;
+    outline: none;
+    padding-left: 15px;
+    position: relative;
+    flex: 1;
+
+    &::before {
+      content: '$';
+      position: absolute;
+      left: 0;
+    }
+  }
+</style>
+
+<div class="terminal" id="terminal">
+  <p>Hello web-container! ( 尝试在命令行中输入命令,可以安装依赖，运行 nodejs 脚本，开启 http 服务等... )</p>
+  <div id="output" class="output"></div>
+  <div class="command" id="command" contenteditable="true"></div>
+</div>
+<script type="module" src="index.ts"></script>
