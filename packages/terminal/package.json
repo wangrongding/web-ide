@@ -16,6 +16,7 @@
     "vite": "^4.5.0"
   },
   "dependencies": {
-    "@webcontainer/api": "^1.1.8"
+    "@webcontainer/api": "^1.1.8",
+    "ansi-to-html": "^0.7.2"
   }
 }
