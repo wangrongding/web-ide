@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
     "--  dev  --------------------------------------------------": "",
-    "dev": "pnpm dev:terminal",
+    "dev": "pnpm -r --no-sort dev",
     "dev:terminal": "pnpm -F \"@web-ide/terminal\" dev",
     "dev:doc": "pnpm -F doc dev",
     "dev:parallel": "pnpm -r --no-sort dev",
