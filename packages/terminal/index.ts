@@ -44,7 +44,7 @@ async function run() {
   if (cmd === 'cls' || cmd === 'clear') return (output.innerHTML = '');
   const [commandName, ...args] = cmd.split(' ');
   // 执行命令
-  print(`>${cmd} \n`);
+  print(`> ${cmd} `);
   history.push(cmd);
   const wcProcess = await wc.spawn(commandName, args);
   // 打印输出
@@ -66,6 +66,7 @@ async function run() {
 // 选择历史命令
 function chooseHistory(keyCode: number) {
   historyIndex += keyCode === 38 ? -1 : 1;
+  if (history.length === 0) return;
   if (historyIndex < 0) historyIndex = 0;
   if (historyIndex > history.length - 1) historyIndex = history.length - 1;
   command.innerText = history[historyIndex];
