@@ -12,10 +12,14 @@
 
 可以运行命令，nodejs 脚本，安装依赖，开启 http 服务等。。。
 
-![](https://assets.fedtop.com/picbed/1698658684177.jpg)
+![](https://assets.fedtop.com/picbed/202310310117865.png)
+
+![](https://assets.fedtop.com/picbed/202310310116262.png)
 
 ## editor
 
 ...
 
-## ...
+## Other
+
+...
