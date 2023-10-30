@@ -10,6 +10,8 @@
 
 已开发最基本的功能
 
+可以运行命令，nodejs 脚本，安装依赖，开启 http 服务等。。。
+
 ![](https://assets.fedtop.com/picbed/1698658684177.jpg)
 
 ## editor
