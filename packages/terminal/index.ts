@@ -12,6 +12,10 @@ function print(text: string) {
   output.innerHTML += `<p class='output-line'>${text}</p>`;
 }
 
+function error(text: string) {
+  output.innerHTML += `<p class='output-line error'>${text}</p>`;
+}
+
 command.onkeydown = async e => {
   // 如果是回车键
   if (e.keyCode !== 13) return;
@@ -19,7 +23,6 @@ command.onkeydown = async e => {
   const cmd = command.innerText;
   command.innerText = '';
   console.log('🚀🚀🚀 / cmd:', cmd);
-  // 将 cmd 解析命令行参数
   const [commandName, ...args] = cmd.split(' ');
   // 执行命令
   print(`> ${cmd} `);
@@ -27,11 +30,10 @@ command.onkeydown = async e => {
   // 打印输出
   wcProcess.output.pipeTo(
     new WritableStream({
-      write(data) {
-        console.log(data);
-        print(` ${data} `);
-      },
+      write: chunk => print(` ${chunk} `),
     })
   );
-  await wcProcess.exit;
+  if (await wcProcess.exit) {
+    error(`Process failed and exited with code ${await wcProcess.exit}`);
+  }
 };
