@@ -5,39 +5,40 @@
     color: limegreen;
     height: 100vh;
     overflow-y: auto;
-    padding: 20px;
+    padding: 40px;
+    border-radius: 8px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    box-sizing: border-box;
   }
 
+  pre {
+    margin: 0;
+  }
   .output {
-    .output-line {
-      margin: 0px;
-    }
-    .output-line.error {
+    .error {
       color: red;
     }
   }
   .command {
     color: limegreen;
-    height: 30px;
+    min-height: 50px;
     outline: none;
-    padding-left: 15px;
     position: relative;
     flex: 1;
+    margin-left: 10px;
 
     &::before {
-      content: '$';
+      content: '❯';
       position: absolute;
-      left: 0;
+      left: -10px;
     }
   }
 </style>
 
 <div class="terminal" id="terminal">
-  <p>Hello web-container! ( 尝试在命令行中输入命令,可以安装依赖，运行 nodejs 脚本，开启 http 服务等... )</p>
-  <div id="output" class="output"></div>
-  <div class="command" id="command" contenteditable="true"></div>
+  <pre><code id="output" class="output"></code></pre>
+  <pre class="command" id="command" contenteditable="true"></pre>
 </div>
 <script type="module" src="index.ts"></script>
