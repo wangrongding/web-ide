@@ -44,7 +44,7 @@ async function run() {
   if (cmd === 'cls' || cmd === 'clear') return (output.innerHTML = '');
   const [commandName, ...args] = cmd.split(' ');
   // 执行命令
-  print(`> ${cmd} `);
+  print(`=❯ ${cmd} `);
   history.push(cmd);
   const wcProcess = await wc.spawn(commandName, args);
   // 打印输出
