@@ -1,73 +1,102 @@
-import { WebContainer } from '@webcontainer/api';
-import Convert from 'ansi-to-html';
+import { WebContainer } from '@webcontainer/api'
+import { Terminal } from '@xterm/xterm'
+import { FitAddon } from '@xterm/addon-fit'
 
-console.log(process.env.NODE_ENV);
-const convert = new Convert();
-const output = document.getElementById('output')!;
-const command = document.getElementById('command')!;
-const terminal = document.getElementById('terminal')!;
-const history: string[] = []; // 命令行历史记录
-let historyIndex = history.length;
+console.log(process.env.NODE_ENV)
 
-print('Booting...');
-// boot 方法只能调用一次，并且只能创建一个 WebContainer 实例。
-const wc = await WebContainer.boot();
-print('Booted!');
-print('Hello Web-Container! ( 尝试在命令行中输入命令,可以安装依赖，运行 nodejs 脚本，开启 http 服务等... )');
-command.focus();
+// ---------- xterm 终端 ----------
+const term = new Terminal({
+  cursorBlink: true,
+  fontSize: 14,
+  fontFamily: "'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace",
+  theme: {
+    background: '#13131a',
+    foreground: '#cdd6f4',
+    cursor: '#a6e3a1',
+    selectionBackground: '#45475a',
+    black: '#45475a',
+    red: '#f38ba8',
+    green: '#a6e3a1',
+    yellow: '#f9e2af',
+    blue: '#89b4fa',
+    magenta: '#cba6f7',
+    cyan: '#89dceb',
+    white: '#bac2de',
+    brightBlack: '#585b70',
+    brightRed: '#f38ba8',
+    brightGreen: '#a6e3a1',
+    brightYellow: '#f9e2af',
+    brightBlue: '#89b4fa',
+    brightMagenta: '#cba6f7',
+    brightCyan: '#89dceb',
+    brightWhite: '#a6adc8',
+  },
+  allowProposedApi: true,
+})
+const fitAddon = new FitAddon()
+term.loadAddon(fitAddon)
+term.open(document.getElementById('xterm-container')!)
+fitAddon.fit()
 
-function print(text: string) {
-  // 将 ansi 转换为 html（\x1b[30mblack\x1b[37mwhite)
-  const dom = convert.toHtml(text);
-  output.innerHTML += `\n${dom}`;
-}
+// 窗口 resize 时自适应
+const resizeObserver = new ResizeObserver(() => fitAddon.fit())
+resizeObserver.observe(document.getElementById('terminal')!)
 
-function error(text: string) {
-  output.innerHTML += `<span class='error'>${text}</span>`;
-}
-
-command.onkeydown = async e => {
-  // 上下方向键
-  if (e.keyCode === 38 || e.keyCode === 40) return chooseHistory(e.keyCode);
-  // 如果是回车键
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    return run();
+// ---------- WebContainer 单例（防止 HMR 多次 boot）----------
+declare global {
+  interface Window {
+    __wc?: WebContainer
   }
-};
-
-// 执行命令
-async function run() {
-  let cmd = command.innerText;
-  cmd = cmd.trim();
-  command.innerText = '';
-  if (cmd === 'cls' || cmd === 'clear') return (output.innerHTML = '');
-  const [commandName, ...args] = cmd.split(' ');
-  // 执行命令
-  print(`=❯ ${cmd} `);
-  history.push(cmd);
-  const wcProcess = await wc.spawn(commandName, args);
-  // 打印输出
-  wcProcess.output.pipeTo(
-    new WritableStream({
-      write: chunk => {
-        print(`${chunk}`);
-        // 将输出滚动到底部
-        terminal.scrollTop = terminal.scrollHeight;
-      },
-    })
-  );
-  if (await wcProcess.exit) {
-    error(`Process failed and exited with code ${await wcProcess.exit}`);
-  }
-  historyIndex = history.length;
 }
 
-// 选择历史命令
-function chooseHistory(keyCode: number) {
-  historyIndex += keyCode === 38 ? -1 : 1;
-  if (history.length === 0) return;
-  if (historyIndex < 0) historyIndex = 0;
-  if (historyIndex > history.length - 1) historyIndex = history.length - 1;
-  command.innerText = history[historyIndex];
+if (window.__wc) {
+  window.__wc.teardown()
+  window.__wc = undefined
 }
+
+term.writeln('\x1b[33mBooting WebContainer...\x1b[0m')
+
+let wc: WebContainer
+try {
+  wc = await WebContainer.boot({ coep: 'require-corp', workdirName: 'workspace' })
+  window.__wc = wc
+} catch (e) {
+  term.writeln(`\x1b[31mBoot failed: ${e}\x1b[0m`)
+  throw e
+}
+
+wc.on('error', ({ message }) => term.writeln(`\x1b[31m[WebContainer Error] ${message}\x1b[0m`))
+
+term.writeln('\x1b[32mBooted! Starting shell...\x1b[0m')
+
+// ---------- 启动持久 shell（jsh） ----------
+// jsh 是 WebContainer 内置 shell，支持 cd / Tab 补全 / 命令历史等
+const shell = await wc.spawn('jsh', {
+  terminal: { cols: term.cols, rows: term.rows },
+  env: {
+    PS1: '\x1b[32m❯\x1b[0m ',
+    // 将 npm 全局安装目录重定向到可写路径，避免 /usr/local/lib EACCES
+    npm_config_prefix: '/home/.npm-global',
+    PATH: '/home/.npm-global/bin:/usr/local/bin:/usr/bin:/bin',
+  },
+})
+
+// shell 输出 → xterm 显示
+shell.output.pipeTo(
+  new WritableStream({
+    write(data) {
+      term.write(data)
+    },
+  }),
+)
+
+// xterm 输入（含 Tab / 上下键 / Ctrl+C 等）→ shell stdin
+const shellInput = shell.input.getWriter()
+term.onData(data => shellInput.write(data))
+
+// xterm resize → 同步通知 shell（让 Tab 补全列宽正确）
+term.onResize(({ cols, rows }) => {
+  shell.resize?.({ cols, rows })
+})
+
+term.focus()

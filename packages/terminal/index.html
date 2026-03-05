@@ -1,44 +1,157 @@
-<meta charset="UTF-8" />
-<style>
-  .terminal {
-    background-color: black;
-    color: limegreen;
-    height: 100vh;
-    overflow-y: auto;
-    padding: 40px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    box-sizing: border-box;
-  }
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Terminal</title>
+    <link rel="stylesheet" href="/node_modules/@xterm/xterm/css/xterm.css" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  pre {
-    margin: 0;
-  }
-  .output {
-    .error {
-      color: red;
-    }
-  }
-  .command {
-    color: limegreen;
-    min-height: 50px;
-    outline: none;
-    position: relative;
-    flex: 1;
-    padding-left: 0px;
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
 
-    &::before {
-      content: '=❯';
-      position: absolute;
-      left: -18px;
-    }
-  }
-</style>
+      body {
+        background: #0d0d0d;
+        display: flex;
+        flex-direction: column;
+        font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+      }
 
-<div class="terminal" id="terminal">
-  <pre><code id="output" class="output"></code></pre>
-  <pre class="command" id="command" contenteditable="true"></pre>
-</div>
-<script type="module" src="index.ts"></script>
+      .window {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* 标题栏 */
+      .titlebar {
+        background: #1e1e2e;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        user-select: none;
+      }
+
+      .traffic-lights {
+        display: flex;
+        gap: 7px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .dot.close {
+        background: #ff5f57;
+      }
+      .dot.min {
+        background: #febc2e;
+      }
+      .dot.max {
+        background: #2bc840;
+      }
+
+      .titlebar-title {
+        flex: 1;
+        text-align: center;
+        color: #6c7086;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+      }
+
+      /* 终端主体 */
+      .terminal {
+        flex: 1;
+        background: #13131a;
+        overflow: hidden;
+        padding: 8px 12px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* xterm 容器铺满 */
+      #xterm-container {
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .xterm { height: 100%; }
+
+      /* 让 xterm-viewport 背景与主题背景一致，消除黑边 */
+      .xterm-viewport {
+        background-color: #13131a !important;
+      }
+
+      /* 底部状态栏 */
+      .statusbar {
+        background: #1e1e2e;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 5px 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+
+      .status-item {
+        font-size: 11px;
+        color: #6c7086;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #a6e3a1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="window">
+      <!-- 标题栏 -->
+      <div class="titlebar">
+        <div class="traffic-lights">
+          <div class="dot close"></div>
+          <div class="dot min"></div>
+          <div class="dot max"></div>
+        </div>
+        <div class="titlebar-title">WebContainer Terminal</div>
+      </div>
+
+      <!-- 终端内容（xterm 接管） -->
+      <div class="terminal" id="terminal">
+        <div id="xterm-container"></div>
+      </div>
+
+      <!-- 状态栏 -->
+      <div class="statusbar">
+        <div class="status-item">
+          <div class="status-dot"></div>
+          <span>WebContainer</span>
+        </div>
+        <div class="status-item">jsh</div>
+        <div class="status-item">UTF-8</div>
+      </div>
+    </div>
+
+    <script type="module" src="index.ts"></script>
+  </body>
+</html>
