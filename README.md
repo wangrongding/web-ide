@@ -12,9 +12,8 @@
 
 可以运行命令，nodejs 脚本，安装依赖，开启 http 服务等。。。
 
-![](https://assets.fedtop.com/picbed/202310310117865.png)
+<img width="1920" alt="荣顶" src="https://github.com/user-attachments/assets/40b1ae3c-4fec-4525-9fc5-350f78ecb8a9" />
 
-![](https://assets.fedtop.com/picbed/202310310116262.png)
 
 ## editor
 
